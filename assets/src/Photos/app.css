@@ -1,0 +1,7 @@
+body {
+    background-color: rgba(216, 228, 233, 0.55) !important;
+}
+
+html, body, #root, #root>div{
+    height: 100%;
+}
