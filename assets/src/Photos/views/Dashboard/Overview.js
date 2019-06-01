@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import DropzoneComponent from '../../components/Dropzone/DropzoneComponent';
+import React from 'react';
+import { DropzoneComponent } from '../../components/Dropzone/DropzoneComponent';
+import { Container, Row, Col } from "reactstrap";
 
-class Overview extends Component {
-
-    render(){
-        return(
-            <div>
-                <DropzoneComponent />
-            </div>
-        );
-    }
-}
-
-export default Overview;
+export const Overview = () => {
+    return(
+        <Container>
+            <Row>
+                <Col xs="12" className={"d-flex justify-content-center"}>
+                    <DropzoneComponent />
+                </Col>
+            </Row>
+        </Container>
+    );
+};

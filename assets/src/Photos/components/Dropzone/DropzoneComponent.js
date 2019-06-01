@@ -1,65 +1,29 @@
-import React, { Component } from 'react';
+import React, { useCallback } from 'react';
 import styled from '@emotion/styled';
-import { Col, Form, FormGroup, Label, Input } from "reactstrap";
+import { useDropzone } from 'react-dropzone';
 
 
-const FormSection = styled.div`
+const DropSection = styled.div`
     background-color: #fff;
     padding: 40px;
+    border: dotted 3px #ccc;
 `;
 
-class DropzoneComponent extends Component {
-    constructor(props){
-        super(props);
+export const DropzoneComponent = () => {
+    const onDrop = useCallback(acceptedFiles => {
+        // Do something with the files
+    }, []);
 
-        this.state = {
-            text: ''
-        };
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-
-    handleInputChange(e){
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
-    }
-
-    handleSubmit(e){
-        e.preventDefault();
-
-        const { text } = this.state;
-
-        console.log(text);
-    }
-
-    render() {
-        const { text } = this.state;
-        return(
-            <FormSection className={"col-5"}>
-                <Form id="dropzone" onSubmit={this.handleSubmit}>
-                    <Col>
-                        <FormGroup>
-                            <Label for="input">Email</Label>
-                            <Input
-                                onChange={this.handleInputChange}
-                                value={text}
-                                type="text"
-                                className={"form-control"}
-                                name="input"
-                                id="input"
-                                placeholder="Type something"
-                                autoComplete="on"
-                            />
-                        </FormGroup>
-                    </Col>
-                    <Col className={"mt-5"}>
-                        <input className={"btn btn-dark"} type="submit" value="Upload"/>
-                    </Col>
-                </Form>
-            </FormSection>
-        );
-    }
-}
-
-export default DropzoneComponent;
+    return (
+        <DropSection {...getRootProps()}>
+            <input {...getInputProps()} />
+            {
+                isDragActive ?
+                <p>Drop the files here ...</p> :
+                <p>Drag 'n' drop some files here, or click to select files</p>
+            }
+        </DropSection>
+    );
+};

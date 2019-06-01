@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDom from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import Routes from './config/Routes';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { Overview } from "./views/Dashboard/Overview";
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-class App extends Component {
-    render() {
-        return (
-            <BrowserRouter>
-                <Routes/>
-            </BrowserRouter>
-        )
-    }
+function App(){
+    return (
+        <BrowserRouter>
+            <Route exact path={'/'} component={ Overview } />
+        </BrowserRouter>
+    );
 }
 
-ReactDom.render(<App />, document.getElementById('root'));
+const rootElement = document.getElementById('root');
+ReactDom.render(<App />, rootElement);
