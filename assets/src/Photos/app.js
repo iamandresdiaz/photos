@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { Overview } from "./views/Dashboard/Overview";
+import { Photos } from "./views/Dashboard/Photos";
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
@@ -9,7 +9,7 @@ import './app.css';
 function App(){
     return (
         <BrowserRouter>
-            <Route exact path={'/'} component={ Overview } />
+            <Route exact path={'/'} component={ Photos } />
         </BrowserRouter>
     );
 }

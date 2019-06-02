@@ -27,7 +27,7 @@ final class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/api/upload", name="api_photo_upload", methods={"GET"})
+     * @Route("/api/upload", name="api_photo_upload", methods={"POST"})
      */
     public function upload(Request $request): JsonResponse
     {
@@ -35,9 +35,9 @@ final class PhotoController extends AbstractController
             return new JsonResponse(
                 [
                     'status' => Response::HTTP_OK,
-                    'message' => 'Endpoint api_photo_upload working.'
+                    'data' => $request->get("data")
                 ],
-                Response::HTTP_CREATED
+                Response::HTTP_OK
             );
         } catch (Exception $exception)
         {
