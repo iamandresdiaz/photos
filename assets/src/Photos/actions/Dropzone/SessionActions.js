@@ -1,6 +1,6 @@
 import { dropzoneConstants } from "../../../Shared/constants/DropzoneConstants";
 import dispatcher from '../../AppDispatcher';
-import { uploadRequest } from "../../../Shared/Api/Api";
+import { uploadRequest } from "../../../Shared/Api/DropZoneUploadApi";
 
 export const sessionActions = {
     upload

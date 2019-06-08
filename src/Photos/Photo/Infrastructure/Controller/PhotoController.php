@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Photos\Photo\Infrastructure\Controller;
 
 
+use App\Photos\Photo\Application\Save\SaveFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class PhotoController extends AbstractController
 {
+    private $saveFile;
 
-    public function __construct()
+    public function __construct(SaveFile $saveFile)
     {
+        $this->saveFile = $saveFile;
     }
 
     /**
@@ -31,11 +34,15 @@ final class PhotoController extends AbstractController
      */
     public function upload(Request $request): JsonResponse
     {
+
         try{
+
+            $this->saveFile->__invoke($request);
+
             return new JsonResponse(
                 [
                     'status' => Response::HTTP_OK,
-                    'data' => $request->get("data")
+                    'message' => 'File saved'
                 ],
                 Response::HTTP_OK
             );

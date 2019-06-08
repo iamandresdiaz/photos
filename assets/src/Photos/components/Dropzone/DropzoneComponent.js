@@ -64,20 +64,29 @@ const ButtonSection = styled.div`
 export const DropzoneComponent = () => {
     const [files, setFiles] = useState([]);
     const [tags, setTags] = useState([]);
+    const [filesInBase64, setFilesInBase64] = useState([]);
 
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/jpeg, image/png',
         onDrop: acceptedFiles => {
-            setFiles(acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            })));
+            setFiles(acceptedFiles);
             setTags([
                 ...tags,
                 {
                     tag: ''
                 }
-            ])
+            ]);
+            setFilesInBase64(transformToBase64(acceptedFiles));
+
         }
+    });
+
+    useEffect(() => {
+        DrozoneStore.on(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
+        return function cleanup() {
+            DrozoneStore.removeListener(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
+        };
+
     });
 
     const handleInputChange = (event, index) => {
@@ -89,41 +98,54 @@ export const DropzoneComponent = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = {
-            files: []
-        };
 
-        if(tags && files){
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.addEventListener('load', () => {
-                    data.files[index] = {
-                        file: reader.result,
-                        tag: tags[index]
-                    };
-                },false);
-
-                reader.readAsDataURL(file);
+        if(files && filesInBase64 && tags) {
+            filesInBase64.forEach((file, index) => {
+                let json = createJsonPayload(file, tags[index], files[index].type);
+                sessionActions.upload(json);
             });
-
-            console.log(data);
-            sessionActions.upload(data)
         }
+
     };
 
     const handleResponse = () => {
         let response = DrozoneStore.getResponse();
-        console.log(response);
+        console.log(response.data);
+
+    };
+
+    const createJsonPayload = (file, fileTag, type) => {
+        return JSON.stringify({
+            tag: fileTag,
+            type: type,
+            file: file
+        });
+
+    };
+
+    const transformToBase64 = files => {
+        let filesEncoded = [];
+
+        files.forEach(file => {
+            let reader = new FileReader();
+            reader.addEventListener('load', () => {
+                let binaryString = reader.result;
+                filesEncoded.push(btoa(binaryString));
+            }, false);
+            reader.readAsBinaryString(file);
+        });
+
+        return filesEncoded;
+
     };
 
     const thumbs = files.map((file, index) => (
-
-        <Col key={index}>
+        <Col xs={'4'} key={index}>
             <Row>
                 <Col xs={'12'} className={'d-flex justify-content-center'}>
                     <Thumb>
                         <ThumbInner>
-                            <Img src={file.preview} />
+                            <Img src={URL.createObjectURL(file)} />
                         </ThumbInner>
                     </Thumb>
                 </Col>
@@ -140,23 +162,11 @@ export const DropzoneComponent = () => {
                             placeholder={'Type a tag name'}
                             autoComplete={'on'}
                         />
-                    </FormGroup> :
-                    null
+                    </FormGroup> : null
             }
         </Col>
+
     ));
-
-    useEffect(() => () => {
-        files.forEach(file => URL.revokeObjectURL(file.preview));
-    }, [files]);
-
-    useEffect(() => {
-        DrozoneStore.on(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
-
-        return function cleanup() {
-            DrozoneStore.removeListener(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
-        };
-    });
 
     return (
         <Row>
@@ -181,8 +191,7 @@ export const DropzoneComponent = () => {
                                     </Form>
                                 </Col>
                             </Row>
-                        </PreviewSection> :
-                        null
+                        </PreviewSection> : null
                 }
             </Col>
         </Row>

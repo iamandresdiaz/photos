@@ -2,11 +2,12 @@ import axios from "axios";
 import { serverActions } from "../../Photos/actions/Dropzone/ServerActions";
 import { apiEndpoints } from "../constants/DropzoneConstants";
 
-export function uploadRequest(data) {
+export function uploadRequest(raw) {
     const url = apiEndpoints.UPLOAD;
+
     axios.post(
         url,
-        data,
+        raw,
         {
             headers: {
                 'Content-Type': 'application/json',
