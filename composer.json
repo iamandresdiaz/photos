@@ -6,6 +6,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "^1.5",
+        "bunny/bunny": "@dev",
+        "predis/predis": "^1.1",
         "ramsey/uuid": "^3.8",
         "symfony/console": "4.2.*",
         "symfony/flex": "^1.2",

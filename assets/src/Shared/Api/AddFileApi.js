@@ -2,7 +2,7 @@ import axios from "axios";
 import { serverActions } from "../../Photos/actions/Dropzone/ServerActions";
 import { apiEndpoints } from "../constants/DropzoneConstants";
 
-export function uploadRequest(raw) {
+export function request(raw) {
     const url = apiEndpoints.UPLOAD;
 
     axios.post(

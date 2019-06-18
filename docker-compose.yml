@@ -20,6 +20,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/var/www/html
+      - ./vendor:/var/www/html/vendor
       - ./etc/infrastructure/php/php.ini:/usr/local/etc/php/conf.d/php.ini
     env_file:
       - .env
@@ -38,8 +39,6 @@ services:
       MYSQL_ROOT_PASSWORD: 'photos'
     ports:
       - '3306:3306'
-    env_file:
-      - .env
     volumes:
       - ./var/mysql:/var/lib/mysql
 
@@ -63,5 +62,3 @@ services:
     ports:
       - '5630:5672'
       - '15630:15672'
-    env_file:
-      - .env

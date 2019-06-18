@@ -19,6 +19,6 @@ doctrine:
             Photo:
                 is_bundle: false
                 type: yml
-                dir: '%kernel.project_dir%/src/Photos/Photo/Infrastructure/Persistence'
-                prefix: 'App\ShoppingCart\Seller\Domain\Entity'
-                alias: Photo
+                dir: '%kernel.project_dir%/src/Photos/File/Infrastructure/Persistence'
+                prefix: 'App\Photos\File\Domain\Entity'
+                alias: File

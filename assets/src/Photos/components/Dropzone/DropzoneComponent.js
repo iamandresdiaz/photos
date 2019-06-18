@@ -100,10 +100,16 @@ export const DropzoneComponent = () => {
         event.preventDefault();
 
         if(files && filesInBase64 && tags) {
+            let json = {
+                files: []
+            };
+
             filesInBase64.forEach((file, index) => {
-                let json = createJsonPayload(file, tags[index], files[index].type);
-                sessionActions.upload(json);
+                let jsonItem = createJsonItem(file, tags[index], files[index].type);
+                json.files.push(jsonItem);
             });
+
+            sessionActions.upload(json);
         }
 
     };
@@ -114,7 +120,7 @@ export const DropzoneComponent = () => {
 
     };
 
-    const createJsonPayload = (file, fileTag, type) => {
+    const createJsonItem = (file, fileTag, type) => {
         return JSON.stringify({
             tag: fileTag,
             type: type,

@@ -9,6 +9,6 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
-    App\Photos\Photo\Infrastructure\Controller\:
-       resource: '../src/Photos/Photo/Infrastructure/Controller'
+    App\Photos\File\Infrastructure\Controller\:
+       resource: '../src/Photos/File/Infrastructure/Controller'
        tags: ['controller.service_arguments']
