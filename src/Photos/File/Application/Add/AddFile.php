@@ -4,47 +4,56 @@ declare(strict_types=1);
 namespace App\Photos\File\Application\Add;
 
 
+use App\Photos\File\Domain\Entity\File;
+use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
-use Symfony\Component\HttpFoundation\Request;
+use App\Photos\File\Domain\ValueObject\FileTag;
+use App\Photos\File\Domain\ValueObject\FileType;
+use App\Photos\File\Infrastructure\Persistence\MySqlFileRepository;
+use App\Photos\File\Infrastructure\Persistence\SystemFileRepository;
 use Ramsey\Uuid\Uuid;
-use UnexpectedValueException;
 
 final class AddFile
 {
+    private $systemFileRepository;
+    private $mySqlFileRepository;
 
-    public function __invoke(Request $request): array
-    {
-        $requestData = $request->getContent();
-        $rawData = json_decode($requestData, true);
-
-        $files = $rawData["files"];
-        $paths = [];
-
-        foreach ($files as $item)
-        {
-            $file = json_decode($item, true);
-            $paths[] = $this->save($file);
-        }
-
-        return $paths;
+    public function __construct(
+        SystemFileRepository $systemFileRepository,
+        MySqlFileRepository $mySqlFileRepository
+    ) {
+        $this->systemFileRepository = $systemFileRepository;
+        $this->mySqlFileRepository  = $mySqlFileRepository;
     }
 
-    private function save(array $file): FilePath
+    public function __invoke(array $filesData): array
     {
-        $fileInBase64 = $file["file"];
-        $fileDecode   = base64_decode($fileInBase64);
+        $files = [];
 
-        $type        = $file["type"];
-        $typeExplode = explode('/', $type);
-        $extension   = $typeExplode[1];
-        $path        = new FilePath(Uuid::uuid4()->toString() . '.' . $extension);
-
-        try{
-            file_put_contents($path->__toString(), $fileDecode);
-        } catch (UnexpectedValueException $unexpectedValueException){
-            throw $unexpectedValueException;
+        foreach ($filesData as $item)
+        {
+            $file = $this->getFile(json_decode($item, true));
+            $this->systemFileRepository->add($file);
+            $this->mySqlFileRepository->add($file);
+            $files[] = $file['info'];
         }
 
-        return $path;
+        return $files;
+    }
+
+    private function getFile(array $item): array
+    {
+        $fileData  = $item['file'];
+        $tag       = new FileTag($item['tag']);
+        $type      = new FileType(explode('/', $item['type'])[1]);
+        $path      = new FilePath('images/' . Uuid::uuid4()->toString() . '.' . $type->__toString());
+        $filter    = new FileFilter('original');
+        $file      = new File($tag, $type, $path, $filter);
+
+        return[
+            'data' => $fileData,
+            'info' => $file
+        ];
+
     }
 }

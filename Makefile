@@ -1,7 +1,7 @@
 .PHONY: deps build start
 
-build: deps start
+build: env start
 
-deps: ; composer install
+env: ; docker-compose build --no-cache
 
 start: ; docker-compose up -d
