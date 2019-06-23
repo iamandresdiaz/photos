@@ -5,10 +5,10 @@ export const serverActions = {
     upload
 };
 
-function upload(response, error) {
+function upload(status, error) {
     dispatcher.dispatch({
         type: dropzoneConstants.UPLOAD_RESPONSE,
-        response: response,
+        status: status,
         error: error
     });
 }

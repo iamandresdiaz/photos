@@ -5,11 +5,11 @@ import { dropzoneConstants } from "../../../Shared/constants/DropzoneConstants";
 class DropzoneStore extends EventEmitter{
     constructor(){
         super();
-        this.apiResponse = {};
+        this.response = {};
     }
 
     getResponse() {
-        return this.apiResponse;
+        return this.response;
     }
 
     handleActions(action){
@@ -17,15 +17,20 @@ class DropzoneStore extends EventEmitter{
             case dropzoneConstants.UPLOAD_RESPONSE:
 
                 if(action.error){
-                    console.log({
-                        type: dropzoneConstants.UPLOAD_ERROR,
-                        message: action.error
-                    });
+                    this.response = {
+                        'success': null,
+                        'error': dropzoneConstants.UPLOAD_ERROR
+                    };
+
+                    this.emit(dropzoneConstants.UPLOAD_ERROR);
+                } else {
+                    this.response = {
+                        'success': action.status,
+                        'error': null
+                    };
+
+                    this.emit(dropzoneConstants.UPLOAD_SUCCESS);
                 }
-
-                this.apiResponse = action.response;
-
-                this.emit(dropzoneConstants.UPLOAD_SUCCESS);
                 break;
 
             default:

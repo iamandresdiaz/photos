@@ -21,6 +21,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./vendor:/var/www/html/vendor
+      - ./node_modules:/var/www/html/node_modules
       - ./public/images:/var/www/html/public/images
       - ./etc/infrastructure/php/php.ini:/usr/local/etc/php/conf.d/php.ini
     depends_on:

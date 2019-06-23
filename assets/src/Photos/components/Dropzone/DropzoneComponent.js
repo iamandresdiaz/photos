@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { sessionActions } from "../../actions/Dropzone/SessionActions";
 import DrozoneStore from '../../stores/Dropzone/DropzoneStore';
 import { dropzoneConstants } from "../../../Shared/constants/DropzoneConstants";
+import {AlertComponent} from "../Alert/AlertComponent";
 
 const DropSection = styled.div`
     background-color: #fff;
@@ -65,6 +66,7 @@ export const DropzoneComponent = () => {
     const [files, setFiles] = useState([]);
     const [tags, setTags] = useState([]);
     const [filesInBase64, setFilesInBase64] = useState([]);
+    const [status, setStatus] = useState({});
 
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/jpeg, image/png',
@@ -82,9 +84,11 @@ export const DropzoneComponent = () => {
     });
 
     useEffect(() => {
-        DrozoneStore.on(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
+        DrozoneStore.on(dropzoneConstants.UPLOAD_SUCCESS, handleSuccess);
+        DrozoneStore.on(dropzoneConstants.UPLOAD_ERROR, handleError);
         return function cleanup() {
-            DrozoneStore.removeListener(dropzoneConstants.UPLOAD_SUCCESS, handleResponse);
+            DrozoneStore.removeListener(dropzoneConstants.UPLOAD_SUCCESS, handleSuccess);
+            DrozoneStore.removeListener(dropzoneConstants.UPLOAD_ERROR, handleError);
         };
 
     });
@@ -114,10 +118,28 @@ export const DropzoneComponent = () => {
 
     };
 
-    const handleResponse = () => {
+    const handleSuccess = () => {
         let response = DrozoneStore.getResponse();
-        console.log(response.data);
+        restartAllStates();
+        setStatus(response);
+        setTimeout(restartStatus, 4000);
+    };
 
+    const handleError = () => {
+        let response = DrozoneStore.getResponse();
+        restartAllStates();
+        setStatus(response);
+        setTimeout(restartStatus, 4000);
+    };
+
+    const restartAllStates = () => {
+        setFiles([]);
+        setTags([]);
+        setFilesInBase64([]);
+    };
+
+    const restartStatus = () => {
+        setStatus({});
     };
 
     const createJsonItem = (file, fileTag, type) => {
@@ -199,6 +221,7 @@ export const DropzoneComponent = () => {
                             </Row>
                         </PreviewSection> : null
                 }
+                <AlertComponent status={status} />
             </Col>
         </Row>
     );

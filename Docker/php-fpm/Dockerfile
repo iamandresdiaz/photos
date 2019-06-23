@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.2-fpm
 
 RUN apt-get update && apt-get install -y git zip libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 
@@ -7,3 +7,9 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 RUN docker-php-ext-install mysqli pdo pdo_mysql sockets zip gd
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# nodejs & npm
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
+RUN apt-get install -y nodejs

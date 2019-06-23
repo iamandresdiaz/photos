@@ -15,7 +15,7 @@ export function request(raw) {
         }
         )
         .then((response) => {
-            serverActions.upload(response, null)
+            serverActions.upload(response.status, null)
         })
         .catch((error) => {
             serverActions.upload(null, error)

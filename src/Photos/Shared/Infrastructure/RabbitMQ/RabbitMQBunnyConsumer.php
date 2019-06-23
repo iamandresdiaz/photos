@@ -49,7 +49,8 @@ final class RabbitMQBunnyConsumer
         }
 
         $channel = $client->channel();
-        $channel->queueDeclare('files');
+        $channel->queueDeclare(RabbitMQBunnyClient::QUEUE);
+        $channel->queueBind(RabbitMQBunnyClient::QUEUE, RabbitMQBunnyClient::EXCHANGE);
 
         $channel->run(
             function (Message $message, Channel $channel, Client $bunny) {
@@ -67,7 +68,7 @@ final class RabbitMQBunnyConsumer
 
                 $channel->nack($message);
             },
-            'files'
+            RabbitMQBunnyClient::QUEUE
         );
     }
 

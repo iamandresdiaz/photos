@@ -16,6 +16,9 @@ final class RabbitMQBunnyClient
         'password'  => '1234',
     ];
 
+    const QUEUE = 'files';
+    const EXCHANGE = 'amq.fanout';
+
     private $bunnyClient;
 
     public function __construct()

@@ -31,15 +31,16 @@ final class RabbitMQBunnyProducer
         }
 
         $channel = $client->channel();
-        $channel->queueDeclare('files');
+        $channel->queueDeclare(RabbitMQBunnyClient::QUEUE);
+        $channel->queueBind(RabbitMQBunnyClient::QUEUE, RabbitMQBunnyClient::EXCHANGE);
 
         foreach ($files as $file) {
             foreach ($filters as $key => $filter) {
                 $channel->publish(
                     $this->getMessage($file, $filter),
                     [],
-                    '',
-                    'files'
+                    RabbitMQBunnyClient::EXCHANGE,
+                    RabbitMQBunnyClient::QUEUE
                 );
             }
         }
