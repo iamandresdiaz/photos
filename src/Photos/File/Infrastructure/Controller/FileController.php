@@ -6,6 +6,7 @@ namespace App\Photos\File\Infrastructure\Controller;
 
 use App\Photos\File\Application\Add\AddFile;
 use App\Photos\File\Application\Apply\ApplyFilters;
+use App\Photos\File\Application\Find\FindFiles;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,11 +18,13 @@ final class FileController extends AbstractController
 {
     private $addFile;
     private $applyFilters;
+    private $findFiles;
 
-    public function __construct(AddFile $addFile, ApplyFilters $applyFilters)
+    public function __construct(AddFile $addFile, ApplyFilters $applyFilters, FindFiles $findFiles)
     {
-        $this->addFile = $addFile;
+        $this->addFile      = $addFile;
         $this->applyFilters = $applyFilters;
+        $this->findFiles    = $findFiles;
     }
 
     /**
@@ -38,8 +41,7 @@ final class FileController extends AbstractController
     public function upload(Request $request): Response
     {
         try{
-            $requestData = json_decode($request->getContent(), true)['files'];
-            $files = $this->addFile->__invoke($requestData);
+            $files = $this->addFile->__invoke($request);
             $this->applyFilters->__invoke($files);
 
             return new Response(
@@ -54,6 +56,26 @@ final class FileController extends AbstractController
             );
         }
 
+    }
+
+    /**
+     * @Route("/api/search", name="api_file_search", methods={"POST"})
+     */
+    public function search(Request $request): Response
+    {
+        try{
+            $response = $this->findFiles->__invoke($request);
+            return new JsonResponse(
+                $response,
+                Response::HTTP_OK
+            );
+        } catch (Exception $exception)
+        {
+            return new Response(
+                '',
+                $exception->getCode()
+            );
+        }
     }
 
 }

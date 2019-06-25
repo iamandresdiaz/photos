@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Row, Col, FormGroup, Form, Label, Input } from "reactstrap";
+import { Row, Col, FormGroup, Form, Label, Input, InputGroup } from "reactstrap";
 import { useDropzone } from 'react-dropzone';
 import { sessionActions } from "../../actions/Dropzone/SessionActions";
 import DrozoneStore from '../../stores/Dropzone/DropzoneStore';
@@ -31,8 +31,8 @@ const Thumb = styled.div`
     border: 1px solid #eaeaea;
     margin-bottom: 8px;
     margin-right: 8px;
-    width: 150px;
-    height: 150px;
+    width: auto;
+    height: auto;
     padding: 4px;
     overflow: hidden;
     box-sizing: border-box;
@@ -46,8 +46,7 @@ const ThumbInner = styled.div`
 
 const Img = styled.img`
     display: block;
-    width: 100%;
-    height: 100%;
+    height: 140px;
 `;
 
 const Placeholder = styled.p`
@@ -79,7 +78,6 @@ export const DropzoneComponent = () => {
                 }
             ]);
             setFilesInBase64(transformToBase64(acceptedFiles));
-
         }
     });
 
@@ -100,20 +98,45 @@ export const DropzoneComponent = () => {
         ]);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        if(files && filesInBase64 && tags) {
-            let json = {
-                files: []
-            };
-
-            filesInBase64.forEach((file, index) => {
-                let jsonItem = createJsonItem(file, tags[index], files[index].type);
-                json.files.push(jsonItem);
+    const transformToBase64 = (files) => {
+        let filesEncoded = [];
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                const binaryString = reader.result;
+                filesEncoded.push({
+                    base64: btoa(binaryString),
+                    type: file.type,
+                    index: index
+                });
             });
 
-            sessionActions.upload(json);
+            reader.readAsBinaryString(file);
+        });
+
+        return filesEncoded;
+
+    };
+
+    const createJsonItem = (file, tag, type) => {
+        return {
+            tag: tag,
+            type: type,
+            file: file
+        };
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if(files && tags) {
+            let json = [];
+
+            filesInBase64.forEach(file => {
+                let jsonItem = createJsonItem(file.base64, tags[file.index], file.type);
+                json.push(jsonItem);
+            });
+
+            sessionActions.upload(JSON.stringify(json));
         }
 
     };
@@ -122,49 +145,24 @@ export const DropzoneComponent = () => {
         let response = DrozoneStore.getResponse();
         restartAllStates();
         setStatus(response);
-        setTimeout(restartStatus, 4000);
+        setTimeout(restartStatus, 5000);
     };
 
     const handleError = () => {
         let response = DrozoneStore.getResponse();
         restartAllStates();
         setStatus(response);
-        setTimeout(restartStatus, 4000);
+        setTimeout(restartStatus, 5000);
     };
 
     const restartAllStates = () => {
         setFiles([]);
-        setTags([]);
         setFilesInBase64([]);
+        setTags([]);
     };
 
     const restartStatus = () => {
         setStatus({});
-    };
-
-    const createJsonItem = (file, fileTag, type) => {
-        return JSON.stringify({
-            tag: fileTag,
-            type: type,
-            file: file
-        });
-
-    };
-
-    const transformToBase64 = files => {
-        let filesEncoded = [];
-
-        files.forEach(file => {
-            let reader = new FileReader();
-            reader.addEventListener('load', () => {
-                let binaryString = reader.result;
-                filesEncoded.push(btoa(binaryString));
-            }, false);
-            reader.readAsBinaryString(file);
-        });
-
-        return filesEncoded;
-
     };
 
     const thumbs = files.map((file, index) => (
@@ -181,7 +179,7 @@ export const DropzoneComponent = () => {
             {
                 tags && tags.length > 0 ?
                     <FormGroup>
-                        <Label for={`tag-${index}`}>Tag</Label>
+                        <Label for={`tag-${index}`}>🏷 Tag</Label>
                         <Input
                             onChange={(event) => handleInputChange(event, index)}
                             value={tags.tag}
@@ -199,16 +197,17 @@ export const DropzoneComponent = () => {
     return (
         <Row>
             <Col xs={'12'}>
-                <DropSection className={'d-flex justify-content-center align-items-center'} {...getRootProps()}>
+                <h4>Add files 📷</h4>
+                <DropSection id={'dropSection'} className={'d-flex justify-content-center align-items-center'} {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <Placeholder className={'m-0'}>Drag 'n' drop some files here, or click to select files</Placeholder>
+                    <Placeholder className={'m-0'}>Drag and drop some files here, or click to select files</Placeholder>
                 </DropSection>
                 {
                     files && files.length > 0 ?
                         <PreviewSection>
                             <Row>
                                 <Col>
-                                    <h3>Photos</h3>
+                                    <h4>Photos</h4>
                                     <Form onSubmit={handleSubmit} id={'filesToUpload'}>
                                         <ThumbsContainer>
                                             {thumbs}

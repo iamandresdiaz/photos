@@ -11,7 +11,7 @@ export const AlertComponent = ({status}) => {
         <Row>
             <Col>
                 {
-                    status.success ?
+                    status.status ?
                         <Alert className="alert alert-success" role="alert">
                             Files were saved and transformed correctly 🎉
                         </Alert> : null 
@@ -20,7 +20,7 @@ export const AlertComponent = ({status}) => {
                 {
                     status.error ?
                         <Alert className="alert alert-warning" role="alert">
-                            Files are too large.️ Try again
+                            Files are too large.️ Try again.
                         </Alert> : null
                 }
 

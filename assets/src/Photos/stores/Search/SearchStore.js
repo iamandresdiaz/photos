@@ -1,8 +1,8 @@
 import { EventEmitter } from "events";
 import dispatcher from "../../AppDispatcher";
-import { dropzoneConstants } from "../../../Shared/constants/DropzoneConstants";
+import { searchConstants } from "../../../Shared/constants/SearchConstants";
 
-class DropzoneStore extends EventEmitter{
+class SearchStore extends EventEmitter{
     constructor(){
         super();
         this.response = {};
@@ -14,24 +14,24 @@ class DropzoneStore extends EventEmitter{
 
     handleActions(action){
         switch (action.type) {
-            case dropzoneConstants.UPLOAD_RESPONSE:
+            case searchConstants.SEARCH_RESPONSE:
 
                 if(action.error){
                     this.response = {
-                        'status': null,
+                        'data': null,
                         'error': {
-                            'type': dropzoneConstants.UPLOAD_ERROR
+                            'type': searchConstants.SEARCH_ERROR
                         }
                     };
 
-                    this.emit(dropzoneConstants.UPLOAD_ERROR);
+                    this.emit(searchConstants.SEARCH_ERROR);
                 } else {
                     this.response = {
-                        'status': action.status,
+                        'data': action.data,
                         'error': null
                     };
 
-                    this.emit(dropzoneConstants.UPLOAD_SUCCESS);
+                    this.emit(searchConstants.SEARCH_SUCCESS);
                 }
                 break;
 
@@ -41,7 +41,7 @@ class DropzoneStore extends EventEmitter{
     }
 }
 
-let dropzoneStore = new DropzoneStore();
-dispatcher.register(dropzoneStore.handleActions.bind(dropzoneStore));
+let searchStore = new SearchStore();
+dispatcher.register(searchStore.handleActions.bind(searchStore));
 
-export default dropzoneStore;
+export default searchStore;

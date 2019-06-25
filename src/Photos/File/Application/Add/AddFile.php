@@ -12,6 +12,7 @@ use App\Photos\File\Domain\ValueObject\FileType;
 use App\Photos\File\Infrastructure\Persistence\MySqlFileRepository;
 use App\Photos\File\Infrastructure\Persistence\SystemFileRepository;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Request;
 
 final class AddFile
 {
@@ -26,13 +27,14 @@ final class AddFile
         $this->mySqlFileRepository  = $mySqlFileRepository;
     }
 
-    public function __invoke(array $filesData): array
+    public function __invoke(Request $request): array
     {
         $files = [];
+        $filesData = json_decode($request->getContent(), true);
 
         foreach ($filesData as $item)
         {
-            $file = $this->getFile(json_decode($item, true));
+            $file = $this->getFile($item);
             $this->systemFileRepository->add($file);
             $this->mySqlFileRepository->add($file);
             $files[] = $file['info'];
