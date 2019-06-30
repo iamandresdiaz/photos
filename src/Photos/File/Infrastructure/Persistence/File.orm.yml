@@ -1,0 +1,40 @@
+App\Photos\File\Domain\Entity\File:
+  type: entity
+  table: files
+  indexes:
+    tag_index:
+      columns: [ tag ]
+  id:
+    id:
+      type: guid
+      column: id
+      unique: true
+      generator:
+        strategy: UUID
+
+  fields:
+
+    path:
+      type: string
+      length: 60
+      column: path
+      unique: true
+      nullable: false
+
+    tag:
+      type: string
+      length: 60
+      column: tag
+      nullable: false
+
+    type:
+      type: string
+      length: 15
+      column: type
+      nullable: false
+
+    filter:
+      type: string
+      length: 15
+      column: filter
+      nullable: false

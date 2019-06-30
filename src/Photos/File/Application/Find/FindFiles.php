@@ -22,25 +22,9 @@ final class FindFiles
     public function __invoke(Request $request): array
     {
         $text  = json_decode($request->getContent(), true)['text'];
-        $files = $this->mySqlFileRepository->find($text);
+        $files = $this->mySqlFileRepository->cachedFind($text);
 
-        $response = [];
-
-        foreach ($files as $file)
-        {
-            $response[] = $this->getFile($file);
-        }
-
-        return $response;
+        return $files;
     }
 
-    private function getFile(File $file): array
-    {
-        return [
-            'path'   => $file->getPath(),
-            'tag'    => $file->getTag(),
-            'type'   => $file->getType(),
-            'filter' => $file->getFilter()
-        ];
-    }
 }
