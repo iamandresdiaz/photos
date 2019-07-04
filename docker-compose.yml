@@ -60,3 +60,31 @@ services:
       - ./var/rabbitmq/:/var/lib/rabbitmq
     ports:
       - '15674:15672'
+
+  elasticsearch:
+    container_name: photos-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+    environment:
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    volumes:
+      - ./var/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - '9200:9200'
+
+  kibana:
+    container_name: photos-kibana
+    image: docker.elastic.co/kibana/kibana:6.7.0
+    ports:
+      - '5601:5601'
+    environment:
+      ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+  blackfire:
+    image: blackfire/blackfire
+    environment:
+      BLACKFIRE_SERVER_ID: '3622b39f-ea96-43e1-b209-9ccbb1e4d575'
+      BLACKFIRE_SERVER_TOKEN: '90deddbb5e02a8f9e71395463f7e29a8ccec0d28c342cbf6a74e504f6fab3011'

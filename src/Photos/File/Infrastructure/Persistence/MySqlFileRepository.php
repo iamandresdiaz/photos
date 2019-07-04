@@ -55,6 +55,7 @@ final class MySqlFileRepository implements FileRepository
         $files = $this->find($text);
 
         $this->redisClient->set($cacheKey, json_encode($files));
+        $this->redisClient->expire($cacheKey);
 
         return $files;
 

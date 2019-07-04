@@ -30,4 +30,9 @@ final class RedisClient
         return $this->redis->set($key,$value);
     }
 
+    public function expire($key, $time = 3600)
+    {
+        return $this->redis->expire($key, $time);
+    }
+
 }

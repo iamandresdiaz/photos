@@ -24,7 +24,9 @@ final class SystemFileRepository implements FileRepository
 
     public function find(string $text): array
     {
-        // TODO: Implement find() method.
     }
 
+    public function cachedFind(string $text): array
+    {
+    }
 }
