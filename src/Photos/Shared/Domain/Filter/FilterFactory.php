@@ -14,6 +14,7 @@ final class FilterFactory
     const FILTER_SKETCH     = 'sketch';
     const FILTER_INVERT     = 'invert';
     const FILTER_PIXELATE   = 'pixelate';
+    const PUBLIC_FOLDER     = 'public/';
 
     public function create(SimpleImage $image, array $fileInfo)
     {
@@ -22,30 +23,37 @@ final class FilterFactory
         {
             case self::FILTER_SEPIA:
                 $image
-                    ->fromFile('public/' . $fileInfo['original_path'])
+                    ->fromFile(self::PUBLIC_FOLDER . $fileInfo['original_path'])
                     ->sepia()
-                    ->toFile('public/' . $fileInfo['new_path']);
+                    ->toFile(self::PUBLIC_FOLDER . $fileInfo['new_path']);
                 break;
 
             case self::FILTER_DESATURATE:
                 $image
-                    ->fromFile('public/' . $fileInfo['original_path'])
+                    ->fromFile(self::PUBLIC_FOLDER . $fileInfo['original_path'])
                     ->desaturate()
-                    ->toFile('public/' . $fileInfo['new_path']);
+                    ->toFile(self::PUBLIC_FOLDER . $fileInfo['new_path']);
                 break;
 
             case self::FILTER_INVERT:
                 $image
-                    ->fromFile('public/' . $fileInfo['original_path'])
+                    ->fromFile(self::PUBLIC_FOLDER . $fileInfo['original_path'])
                     ->invert()
-                    ->toFile('public/' . $fileInfo['new_path']);
+                    ->toFile(self::PUBLIC_FOLDER . $fileInfo['new_path']);
                 break;
 
             case self::FILTER_PIXELATE:
                 $image
-                    ->fromFile('public/' . $fileInfo['original_path'])
+                    ->fromFile(self::PUBLIC_FOLDER . $fileInfo['original_path'])
                     ->pixelate()
-                    ->toFile('public/' . $fileInfo['new_path']);
+                    ->toFile(self::PUBLIC_FOLDER . $fileInfo['new_path']);
+                break;
+
+            case self::FILTER_SKETCH:
+                $image
+                    ->fromFile(self::PUBLIC_FOLDER . $fileInfo['original_path'])
+                    ->sketch()
+                    ->toFile(self::PUBLIC_FOLDER . $fileInfo['new_path']);
                 break;
 
             default:

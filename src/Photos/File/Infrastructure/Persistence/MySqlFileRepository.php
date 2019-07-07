@@ -14,11 +14,16 @@ final class MySqlFileRepository implements FileRepository
 {
     private $entityManager;
     private $redisClient;
+    private $elasticsearchFileRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, RedisClient $redisClient)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        RedisClient $redisClient,
+        ElasticsearchFileRepository $elasticsearchFileRepository
+    ) {
         $this->entityManager = $entityManager;
         $this->redisClient   = $redisClient;
+        $this->elasticsearchFileRepository = $elasticsearchFileRepository;
     }
 
     public function add(array $file): void
@@ -27,9 +32,9 @@ final class MySqlFileRepository implements FileRepository
         $this->entityManager->flush();
     }
 
-    public function find(string $text): array
+    public function find(array $tags): array
     {
-        $files = $this->entityManager->getRepository(File::class)->findBy(array('tag' => $text));
+        $files = $this->entityManager->getRepository(File::class)->findBy(array('tag' => $tags));
 
         $response = [];
 
@@ -52,7 +57,8 @@ final class MySqlFileRepository implements FileRepository
             return json_decode($cacheItem, true);
         }
 
-        $files = $this->find($text);
+        $elaticResponse = $this->elasticsearchFileRepository->find($text);
+        $files = $this->find($elaticResponse);
 
         $this->redisClient->set($cacheKey, json_encode($files));
         $this->redisClient->expire($cacheKey);

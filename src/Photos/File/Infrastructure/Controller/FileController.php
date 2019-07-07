@@ -44,6 +44,7 @@ final class FileController extends AbstractController
             $files = $this->addFile->__invoke($request);
             $this->applyFilters->__invoke($files);
 
+
             return new Response(
                 '',
                 Response::HTTP_OK
@@ -51,8 +52,8 @@ final class FileController extends AbstractController
         } catch (Exception $exception)
         {
             return new Response(
-                '',
-                $exception->getCode()
+                $exception->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
@@ -72,8 +73,8 @@ final class FileController extends AbstractController
         } catch (Exception $exception)
         {
             return new Response(
-                '',
-                $exception->getCode()
+                $exception->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

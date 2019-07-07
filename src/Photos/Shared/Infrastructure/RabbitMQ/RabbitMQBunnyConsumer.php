@@ -10,6 +10,7 @@ use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
 use App\Photos\File\Domain\ValueObject\FileType;
+use App\Photos\File\Infrastructure\Persistence\ElasticsearchFileRepository;
 use App\Photos\File\Infrastructure\Persistence\MySqlFileRepository;
 use App\Photos\Shared\Domain\Filter\FilterFactory;
 use App\Photos\Shared\Infrastructure\SimpleImage\SimpleImageBuilder;
@@ -17,6 +18,7 @@ use Bunny\Channel;
 use Bunny\Message;
 use Bunny\Client;
 use Bunny\Exception\ClientException;
+use DateTime;
 
 final class RabbitMQBunnyConsumer
 {
@@ -24,17 +26,20 @@ final class RabbitMQBunnyConsumer
     private $simpleImageBuilder;
     private $filterFactory;
     private $mySqlFileRepository;
+    private $elasticsearchFileRepository;
 
     public function __construct(
         RabbitMQBunnyClient $rabbitMQBunnyClient,
         SimpleImageBuilder $simpleImageBuilder,
         MySqlFileRepository $mySqlFileRepository,
+        ElasticsearchFileRepository $elasticsearchFileRepository,
         FilterFactory $filterFactory
     ) {
         $this->rabbitMQBunnyClient = $rabbitMQBunnyClient;
         $this->simpleImageBuilder  = $simpleImageBuilder;
         $this->filterFactory       = $filterFactory;
         $this->mySqlFileRepository  = $mySqlFileRepository;
+        $this->elasticsearchFileRepository = $elasticsearchFileRepository;
     }
 
     public function __invoke()
@@ -52,6 +57,11 @@ final class RabbitMQBunnyConsumer
         $channel->queueDeclare(RabbitMQBunnyClient::QUEUE);
         $channel->queueBind(RabbitMQBunnyClient::QUEUE, RabbitMQBunnyClient::EXCHANGE);
 
+        $channel->qos(
+            0,
+            1
+        );
+
         $channel->run(
             function (Message $message, Channel $channel, Client $bunny) {
                 $fileInfo = $this->jsonToArray($message);
@@ -62,6 +72,7 @@ final class RabbitMQBunnyConsumer
                     $this->applyFilter($fileInfo);
                     $file = $this->getFile($fileInfo);
                     $this->mySqlFileRepository->add(['info' => $file]);
+                    $this->elasticsearchFileRepository->add($file);
                     echo 'Finished' . PHP_EOL;
                     return;
                 }
@@ -91,7 +102,8 @@ final class RabbitMQBunnyConsumer
         $type   = new FileType($fileInfo['type']);
         $path   = new FilePath($fileInfo['new_path']);
         $filter = new FileFilter($fileInfo['filter_to_apply']);
+        $createdAt = new DateTime('now');
 
-        return new File($tag,$type,$path,$filter);
+        return new File($tag,$type,$path,$filter,$createdAt);
     }
 }

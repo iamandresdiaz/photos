@@ -9,22 +9,27 @@ use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
 use App\Photos\File\Domain\ValueObject\FileType;
+use App\Photos\File\Infrastructure\Persistence\ElasticsearchFileRepository;
 use App\Photos\File\Infrastructure\Persistence\MySqlFileRepository;
 use App\Photos\File\Infrastructure\Persistence\SystemFileRepository;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
+use DateTime;
 
 final class AddFile
 {
     private $systemFileRepository;
     private $mySqlFileRepository;
+    private $elasticsearchFileRepository;
 
     public function __construct(
         SystemFileRepository $systemFileRepository,
-        MySqlFileRepository $mySqlFileRepository
+        MySqlFileRepository $mySqlFileRepository,
+        ElasticsearchFileRepository $elasticsearchFileRepository
     ) {
         $this->systemFileRepository = $systemFileRepository;
         $this->mySqlFileRepository  = $mySqlFileRepository;
+        $this->elasticsearchFileRepository = $elasticsearchFileRepository;
     }
 
     public function __invoke(Request $request): array
@@ -37,6 +42,7 @@ final class AddFile
             $file = $this->getFile($item);
             $this->systemFileRepository->add($file);
             $this->mySqlFileRepository->add($file);
+            $this->elasticsearchFileRepository->add($file['info']);
             $files[] = $file['info'];
         }
 
@@ -50,7 +56,8 @@ final class AddFile
         $type      = new FileType(explode('/', $item['type'])[1]);
         $path      = new FilePath('images/' . Uuid::uuid4()->toString() . '.' . $type->__toString());
         $filter    = new FileFilter('original');
-        $file      = new File($tag, $type, $path, $filter);
+        $createdAt = new DateTime('now');
+        $file      = new File($tag, $type, $path, $filter, $createdAt);
 
         return[
             'data' => $fileData,

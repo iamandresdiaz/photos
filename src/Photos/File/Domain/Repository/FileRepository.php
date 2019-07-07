@@ -7,6 +7,6 @@ namespace App\Photos\File\Domain\Repository;
 interface FileRepository
 {
     public function add(array $file):void;
-    public function find(string $text):array;
+    public function find(array $text):array;
     public function cachedFind(string $text):array;
 }

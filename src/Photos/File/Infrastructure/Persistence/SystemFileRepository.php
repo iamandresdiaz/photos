@@ -8,7 +8,7 @@ namespace App\Photos\File\Infrastructure\Persistence;
 use App\Photos\File\Domain\Repository\FileRepository;
 use UnexpectedValueException;
 
-final class SystemFileRepository implements FileRepository
+final class SystemFileRepository
 {
 
     public function add(array $file): void
@@ -22,11 +22,4 @@ final class SystemFileRepository implements FileRepository
 
     }
 
-    public function find(string $text): array
-    {
-    }
-
-    public function cachedFind(string $text): array
-    {
-    }
 }

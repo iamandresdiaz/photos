@@ -38,3 +38,8 @@ App\Photos\File\Domain\Entity\File:
       length: 15
       column: filter
       nullable: false
+
+    createdAt:
+      type: datetime
+      column: created_at
+      nullable: false

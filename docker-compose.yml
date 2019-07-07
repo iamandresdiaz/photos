@@ -24,11 +24,12 @@ services:
       - ./node_modules:/var/www/html/node_modules
       - ./public/images:/var/www/html/public/images
       - ./etc/infrastructure/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-    depends_on:
-      - rabbitmq
     links:
       - mysql
       - redis
+      - rabbitmq
+      - elasticsearch
+      - blackfire
 
   mysql:
     container_name: photos-mysql
@@ -86,5 +87,7 @@ services:
   blackfire:
     image: blackfire/blackfire
     environment:
-      BLACKFIRE_SERVER_ID: '3622b39f-ea96-43e1-b209-9ccbb1e4d575'
-      BLACKFIRE_SERVER_TOKEN: '90deddbb5e02a8f9e71395463f7e29a8ccec0d28c342cbf6a74e504f6fab3011'
+      - BLACKFIRE_SERVER_ID
+      - BLACKFIRE_SERVER_TOKEN
+      # BLACKFIRE_SERVER_ID: SERVER-ID
+      # BLACKFIRE_SERVER_TOKEN: SERVER-TOKEN

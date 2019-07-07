@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Photos\File\Application\Find;
 
 
-use App\Photos\File\Domain\Entity\File;
 use App\Photos\File\Infrastructure\Persistence\MySqlFileRepository;
 use Symfony\Component\HttpFoundation\Request;
 

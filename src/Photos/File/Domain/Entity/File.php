@@ -5,31 +5,33 @@ declare(strict_types=1);
 namespace App\Photos\File\Domain\Entity;
 
 
-use App\Photos\File\Domain\ValueObject\FileData;
 use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
 use App\Photos\File\Domain\ValueObject\FileType;
+use DateTime;
 
 final class File
 {
     private $id;
-    private $data;
     private $path;
     private $type;
     private $tag;
     private $filter;
+    private $createdAt;
 
     public function __construct(
         FileTag $tag,
         FileType $type,
         FilePath $path,
-        FileFilter $filter
+        FileFilter $filter,
+        DateTime $createdAt
     ) {
         $this->path   = $path->__toString();
         $this->tag    = $tag->__toString();
         $this->type   = $type->__toString();
         $this->filter = $filter->__toString();
+        $this->createdAt = $createdAt;
     }
 
     public function getId(): ?string
@@ -72,12 +74,24 @@ final class File
 
     public function getFilter(): ?string
     {
-        return $this->type;
+        return $this->filter;
     }
 
-    public function setFilter(string $type): self
+    public function setFilter(string $filter): self
     {
-        $this->type = $type;
+        $this->filter = $filter;
         return $this;
     }
+
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getCreatedAt() :?DateTime
+    {
+        return $this->createdAt;
+    }
+
 }
