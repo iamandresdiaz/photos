@@ -8,6 +8,8 @@ services:
     volumes:
       - .:/var/www/html
       - ./etc/infrastructure/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    extra_hosts:
+      - "www-local.photos.io:127.0.0.1"
     depends_on:
       - php-fpm
     links:
@@ -29,7 +31,6 @@ services:
       - redis
       - rabbitmq
       - elasticsearch
-      - blackfire
 
   mysql:
     container_name: photos-mysql
@@ -85,9 +86,14 @@ services:
       - elasticsearch
 
   blackfire:
+    container_name: photos-blackfire
     image: blackfire/blackfire
     environment:
+      - BLACKFIRE_CLIENT_ID
+      - BLACKFIRE_CLIENT_TOKEN
       - BLACKFIRE_SERVER_ID
       - BLACKFIRE_SERVER_TOKEN
-      # BLACKFIRE_SERVER_ID: SERVER-ID
-      # BLACKFIRE_SERVER_TOKEN: SERVER-TOKEN
+    links:
+      - nginx
+    ports:
+      - "8707:8707"

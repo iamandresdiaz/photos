@@ -36,3 +36,6 @@
 2. Log in to PHP container bash `docker exec -it php /bin/bash`
 3. Run `php bin/console make:migration` to make project migrations
 4. Run `php bin/console doctrine:migrations:migrate` to create database tables for the project
+
+
+docker exec photos-blackfire blackfire curl --proxy http://photos-nginx:80 http://www-local.photos.io/
