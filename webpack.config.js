@@ -1,9 +1,17 @@
 let Encore = require('@symfony/webpack-encore');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('app', './assets/src/Photos/app.js')
+    .addPlugin(
+        new CompressionPlugin(
+            {
+                algorithm: 'gzip',
+            }
+        )
+    )
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()

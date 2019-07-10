@@ -8,6 +8,8 @@ services:
     volumes:
       - .:/var/www/html
       - ./etc/infrastructure/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./etc/infrastructure/nginx/certs/server.crt:/etc/certs/server.crt
+      - ./etc/infrastructure/nginx/certs/server.key:/etc/certs/server.key
     extra_hosts:
       - "www-local.photos.io:127.0.0.1"
     depends_on:
@@ -15,7 +17,8 @@ services:
     links:
       - php-fpm
     ports:
-      - '8080:80'
+      - '80:80'
+      - '443:443'
 
   php-fpm:
     container_name: photos-php

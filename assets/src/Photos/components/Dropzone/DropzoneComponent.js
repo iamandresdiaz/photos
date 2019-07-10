@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Row, Col, FormGroup, Form, Label, Input, InputGroup } from "reactstrap";
+import { Row, Col, FormGroup, Form, Label, Input } from "reactstrap";
 import { useDropzone } from 'react-dropzone';
 import { sessionActions } from "../../actions/Dropzone/SessionActions";
 import DrozoneStore from '../../stores/Dropzone/DropzoneStore';
@@ -50,7 +50,7 @@ const Img = styled.img`
 `;
 
 const Placeholder = styled.p`
-    color: #ccc;
+    color: #444;
 `;
 
 const ButtonSection = styled.div`

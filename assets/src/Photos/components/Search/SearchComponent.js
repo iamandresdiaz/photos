@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, FormGroup, Input } from "reactstrap";
+import { Row, Col, Form, FormGroup, Input, Label } from "reactstrap";
 import { sessionActions } from "../../actions/Search/SessionActions";
 
 
@@ -30,13 +30,15 @@ export const SearchComponent = () => {
             <Col>
                 <Form onSubmit={handleSubmit} id={'searchBar'}>
                     <FormGroup className={'mb-0'}>
+                        <Label for={'searchInput'}>Search</Label>
                         <Input
                             onChange={(event) => handleInputChange(event)}
                             value={searchText}
-                            type={'text'}
+                            type={'search'}
                             id={'searchInput'}
                             placeholder={'🔍 Search for files...'}
                             autoComplete={'off'}
+                            name={'search'}
                         />
                     </FormGroup>
                 </Form>

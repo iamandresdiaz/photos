@@ -1,11 +1,13 @@
-.PHONY: deps build start back front consume
+.PHONY: build start backend frontend end consumer
 
-build: start back front
+build: start frontend backend
 
 start: ; docker-compose up -d
 
-back: ; docker-compose exec php-fpm composer install
+backend: ; docker-compose exec php-fpm composer install -o
 
-front: ; docker-compose exec php-fpm npm install
+frontend: ; docker-compose exec php-fpm npm install && npm run build
 
 consumer: ; docker-compose exec php-fpm php bin/console app:consume
+
+end: ; docker-compose down
