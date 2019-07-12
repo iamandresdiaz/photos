@@ -1,9 +1,5 @@
 # 📷 Photos Project
 
-<h3 align="center">
-  Photos Symfony + ReactJS application. 
-</h3>
-
 This project use technologies like:
 
 * Blackfire
