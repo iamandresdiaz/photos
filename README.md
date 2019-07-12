@@ -20,6 +20,7 @@ This project use technologies like:
 * [🚀 Environment setup](#-environment-setup)
   * [🐳 Needed tools](#-needed-tools)
   * [🌍 Application execution](#-application-execution)
+  * [🔍 Profiling](#-profiling)
 
 
 ## 🚀 Environment setup 
