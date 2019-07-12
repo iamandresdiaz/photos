@@ -27,7 +27,7 @@ This project use technologies like:
 2. Clone this project: `git clone https://github.com/iamandresdiaz/photos.git`
 3. Move to the project folder: `cd photos`
 
-### 🌍 Application execution
+#### 🌍 Application execution
 
 1. Create a custom host inside `/etc/hosts` using `sudo vim /etc/hosts` and add `127.0.0.1  local-www.photos.io`
 2. Install App dependencies and bring up the project Docker containers: `make build`
@@ -38,7 +38,7 @@ This project use technologies like:
 each one
 7. Go to [local-www.photos.io](http://local-www.photos.io:8080/) on your browser
 
-### 🔍 Profiling
+#### 🔍 Profiling
 
 1. Change the blackfire environment values inside `docker-compose.yml` to your own blackfire Client and Server keys
 2. Run `make down` to turn down docker containers
