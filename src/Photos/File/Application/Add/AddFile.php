@@ -5,6 +5,7 @@ namespace App\Photos\File\Application\Add;
 
 
 use App\Photos\File\Domain\Entity\File;
+use App\Photos\File\Domain\ValueObject\FileDescription;
 use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
@@ -40,29 +41,35 @@ final class AddFile
         foreach ($filesData as $item)
         {
             $file = $this->getFile($item);
-            $this->systemFileRepository->add($file);
+            $fileData = $this->getFileDataToSaveInSystem($item['file'], $file->getPath());
+            $this->systemFileRepository->add($fileData);
             $this->mySqlFileRepository->add($file);
-            $this->elasticsearchFileRepository->add($file['info']);
-            $files[] = $file['info'];
+            $this->elasticsearchFileRepository->add($file);
+            $files[] = $file;
         }
 
         return $files;
     }
 
-    private function getFile(array $item): array
+    private function getFile(array $item): File
     {
-        $fileData  = $item['file'];
-        $tag       = new FileTag($item['tag']);
-        $type      = new FileType(explode('/', $item['type'])[1]);
-        $path      = new FilePath('images/' . Uuid::uuid4()->toString() . '.' . $type->__toString());
-        $filter    = new FileFilter('original');
-        $createdAt = new DateTime('now');
-        $file      = new File($tag, $type, $path, $filter, $createdAt);
+        $tag         = new FileTag($item['tag']);
+        $description = new FileDescription($item['description']);
+        $type        = new FileType(explode('/', $item['type'])[1]);
+        $path        = new FilePath('images/' . Uuid::uuid4()->toString() . '.' . $type->__toString());
+        $filter      = new FileFilter('original');
+        $createdAt   = new DateTime('now');
+        $file        = new File($tag, $description, $type, $path, $filter, $createdAt);
 
-        return[
-            'data' => $fileData,
-            'info' => $file
-        ];
-
+        return $file;
     }
+
+    private function getFileDataToSaveInSystem(string $file, string $path)
+    {
+        return [
+            'base64' => $file,
+            'path'   => $path
+        ];
+    }
+
 }

@@ -18,7 +18,7 @@ class DropzoneStore extends EventEmitter{
 
                 if(action.error){
                     this.response = {
-                        'status': null,
+                        'success': null,
                         'error': {
                             'type': dropzoneConstants.UPLOAD_ERROR
                         }
@@ -27,7 +27,7 @@ class DropzoneStore extends EventEmitter{
                     this.emit(dropzoneConstants.UPLOAD_ERROR);
                 } else {
                     this.response = {
-                        'status': action.status,
+                        'success': action.status,
                         'error': null
                     };
 

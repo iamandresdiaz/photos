@@ -64,6 +64,7 @@ const ButtonSection = styled.div`
 export const DropzoneComponent = () => {
     const [files, setFiles] = useState([]);
     const [tags, setTags] = useState([]);
+    const [description, setDescription] = useState([]);
     const [filesInBase64, setFilesInBase64] = useState([]);
     const [status, setStatus] = useState({});
 
@@ -75,6 +76,12 @@ export const DropzoneComponent = () => {
                 ...tags,
                 {
                     tag: ''
+                }
+            ]);
+            setDescription([
+                ...description,
+                {
+                    description: ''
                 }
             ]);
             setFilesInBase64(transformToBase64(acceptedFiles));
@@ -91,10 +98,17 @@ export const DropzoneComponent = () => {
 
     });
 
-    const handleInputChange = (event, index) => {
+    const handleTagChange = (event, index) => {
         tags[index] = event.target.value;
         setTags([
             ...tags
+        ]);
+    };
+
+    const handleDescriptionChange = (event, index) => {
+        description[index] = event.target.value;
+        setDescription([
+            ...description
         ]);
     };
 
@@ -118,9 +132,10 @@ export const DropzoneComponent = () => {
 
     };
 
-    const createJsonItem = (file, tag, type) => {
+    const createJsonItem = (file, tag, description,type) => {
         return {
             tag: tag,
+            description: description,
             type: type,
             file: file
         };
@@ -128,14 +143,16 @@ export const DropzoneComponent = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
         if(files && tags) {
             let json = [];
 
             filesInBase64.forEach(file => {
-                let jsonItem = createJsonItem(file.base64, tags[file.index], file.type);
+                let jsonItem = createJsonItem(file.base64, tags[file.index], description[file.index], file.type);
                 json.push(jsonItem);
             });
 
+            handleLoading();
             sessionActions.upload(JSON.stringify(json));
         }
 
@@ -155,10 +172,15 @@ export const DropzoneComponent = () => {
         setTimeout(restartStatus, 5000);
     };
 
+    const handleLoading = () => {
+        setStatus({ loading: true });
+    };
+
     const restartAllStates = () => {
         setFiles([]);
         setFilesInBase64([]);
         setTags([]);
+        setStatus({});
     };
 
     const restartStatus = () => {
@@ -181,12 +203,25 @@ export const DropzoneComponent = () => {
                     <FormGroup>
                         <Label for={`tag-${index}`}>🏷 Tag</Label>
                         <Input
-                            onChange={(event) => handleInputChange(event, index)}
+                            onChange={(event) => handleTagChange(event, index)}
                             value={tags.tag}
                             type={'text'}
                             id={`tag-${index}`}
                             placeholder={'Type a tag name'}
                             autoComplete={'on'}
+                        />
+                    </FormGroup> : null
+            }
+            {
+                description && description.length > 0 ?
+                    <FormGroup>
+                        <Label for={`description-${index}`}>📝 Description</Label>
+                        <Input
+                            onChange={(event) => handleDescriptionChange(event, index)}
+                            value={description.description}
+                            type={'textarea'}
+                            id={`description-${index}`}
+                            placeholder={'Type a description'}
                         />
                     </FormGroup> : null
             }
@@ -202,6 +237,9 @@ export const DropzoneComponent = () => {
                     <input {...getInputProps()} />
                     <Placeholder className={'m-0'}>Drag and drop some files here, or click to select files</Placeholder>
                 </DropSection>
+
+                <AlertComponent status={status} />
+
                 {
                     files && files.length > 0 ?
                         <PreviewSection>
@@ -220,7 +258,7 @@ export const DropzoneComponent = () => {
                             </Row>
                         </PreviewSection> : null
                 }
-                <AlertComponent status={status} />
+
             </Col>
         </Row>
     );

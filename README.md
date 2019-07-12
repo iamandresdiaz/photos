@@ -1,18 +1,24 @@
 # 📷 Photos Project
 
-<p align="center">
-    <a href="#"><img src="https://img.shields.io/badge/Symfony-4.2-purple.svg?style=flat-square&logo=symfony" alt="Symfony 4.2"/></a>
-</p>
-<p align="center">
-  Photos PHP + Symfony + ReactJS application. 
-</p>
+<h3 align="center">
+  Photos Symfony + ReactJS application. 
+</h3>
+
+This project use technologies like:
+
+* Blackfire
+* Elasticsearch with elastica.io + kibana
+* MySQL
+* Symfony
+* ReactJS (hooks) + react-dropzone/react-dropzone
+* RabbitMQ with jakubkulhan/bunny + claviska/SimpleImage
+* Redis
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
 * [🚀 Environment setup](#-environment-setup)
   * [🐳 Needed tools](#-needed-tools)
-  * [🛠️ Environment configuration](#-environment-configuration)
   * [🌍 Application execution](#-application-execution)
 
 
@@ -24,24 +30,20 @@
 2. Clone this project: `git clone https://github.com/iamandresdiaz/photos.git`
 3. Move to the project folder: `cd photos`
 
-
-### 🛠️ Environment configuration
-
-1. Modify the environment variables if needed: `vim .env`
-
-
 ### 🌍 Application execution
 
-1. Install PHP dependencies and bring up the project Docker containers with Docker Compose: `make build`
-2. Log in to PHP container bash `docker exec -it php /bin/bash`
-3. Run `php bin/console make:migration` to make project migrations
-4. Run `php bin/console doctrine:migrations:migrate` to create database tables for the project
+1. Create a custom host inside `/etc/hosts` using `sudo vim /etc/hosts` and add `127.0.0.1  local-www.photos.io`
+2. Install App dependencies and bring up the project Docker containers: `make build`
+3. Run `make migration` to make project migration
+4. Run `make migrate` to apply database migration
+5. Open 2 or more terminal tabs inside the same project route
+6. Bring up the rabbitMQ consumers inside each terminal tab opened before and use the command `make consumer` inside 
+each one
+7. Go to [local-www.photos.io](http://local-www.photos.io:8080/) on your browser
 
-### 🌍 Profiling
+### 🔍 Profiling
 
-export BLACKFIRE_CLIENT_ID=3622b39f-ea96-43e1-b209-9ccbb1e4d575
-export BLACKFIRE_CLIENT_TOKEN=eed7d05d9fdb206ebdbd7140f5a7369fe86e28f0001bd5330bfd988404ed31b4
-export BLACKFIRE_SERVER_ID=4750c8df-009b-4b8c-89a0-b2ba1d34b4c4
-export BLACKFIRE_SERVER_TOKEN=5f0564a2e75a206b01d276895b1ebd7e52cbe5451ddcdf2f833617177e50bd3d
-
-docker exec photos-blackfire blackfire curl --proxy http://photos-nginx:80 http://www-local.photos.io/
+1. Change the blackfire environment values inside `docker-compose.yml` to your own blackfire Client and Server keys
+2. Run `make down` to turn down docker containers
+3. Run `make build` if you didnt do that before other wise use `make start` to turn up the docker containers
+4. Run `make profile` to make a profiling of the application

@@ -6,6 +6,7 @@ namespace App\Photos\Shared\Infrastructure\RabbitMQ;
 
 
 use App\Photos\File\Domain\Entity\File;
+use App\Photos\File\Domain\ValueObject\FileDescription;
 use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
@@ -71,7 +72,7 @@ final class RabbitMQBunnyConsumer
                     echo 'applying ' . $fileInfo['filter_to_apply'] . ' filter to ' . $fileInfo['original_path'] . PHP_EOL;
                     $this->applyFilter($fileInfo);
                     $file = $this->getFile($fileInfo);
-                    $this->mySqlFileRepository->add(['info' => $file]);
+                    $this->mySqlFileRepository->add($file);
                     $this->elasticsearchFileRepository->add($file);
                     echo 'Finished' . PHP_EOL;
                     return;
@@ -98,12 +99,13 @@ final class RabbitMQBunnyConsumer
 
     private function getFile(array $fileInfo): File
     {
-        $tag    = new FileTag($fileInfo['tag']);
-        $type   = new FileType($fileInfo['type']);
-        $path   = new FilePath($fileInfo['new_path']);
-        $filter = new FileFilter($fileInfo['filter_to_apply']);
-        $createdAt = new DateTime('now');
+        $tag         = new FileTag($fileInfo['tag']);
+        $description = new FileDescription($fileInfo['description']);
+        $type        = new FileType($fileInfo['type']);
+        $path        = new FilePath($fileInfo['new_path']);
+        $filter      = new FileFilter($fileInfo['filter_to_apply']);
+        $createdAt   = new DateTime('now');
 
-        return new File($tag,$type,$path,$filter,$createdAt);
+        return new File($tag, $description, $type, $path, $filter, $createdAt);
     }
 }

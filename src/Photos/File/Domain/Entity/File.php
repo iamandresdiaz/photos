@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Photos\File\Domain\Entity;
 
 
+use App\Photos\File\Domain\ValueObject\FileDescription;
 use App\Photos\File\Domain\ValueObject\FileFilter;
 use App\Photos\File\Domain\ValueObject\FilePath;
 use App\Photos\File\Domain\ValueObject\FileTag;
@@ -17,21 +18,24 @@ final class File
     private $path;
     private $type;
     private $tag;
+    private $description;
     private $filter;
     private $createdAt;
 
     public function __construct(
         FileTag $tag,
+        FileDescription $description,
         FileType $type,
         FilePath $path,
         FileFilter $filter,
         DateTime $createdAt
     ) {
-        $this->path   = $path->__toString();
-        $this->tag    = $tag->__toString();
-        $this->type   = $type->__toString();
-        $this->filter = $filter->__toString();
-        $this->createdAt = $createdAt;
+        $this->path        = $path->__toString();
+        $this->tag         = $tag->__toString();
+        $this->description = $description->__toString();
+        $this->type        = $type->__toString();
+        $this->filter      = $filter->__toString();
+        $this->createdAt   = $createdAt;
     }
 
     public function getId(): ?string
@@ -58,6 +62,17 @@ final class File
     public function setTag(string $tag): self
     {
         $this->tag = $tag;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 

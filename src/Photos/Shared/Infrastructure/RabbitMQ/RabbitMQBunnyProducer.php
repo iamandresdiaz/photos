@@ -57,6 +57,7 @@ final class RabbitMQBunnyProducer
                 'new_path'        => 'images/' . Uuid::uuid4()->toString() . '.' . $file->getType(),
                 'filter_to_apply' => $filter,
                 'tag'             => $file->getTag(),
+                'description'     => $file->getDescription(),
                 'type'            => $file->getType()
             ]
         );

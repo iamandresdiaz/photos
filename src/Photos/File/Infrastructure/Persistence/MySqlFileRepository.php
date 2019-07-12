@@ -26,15 +26,21 @@ final class MySqlFileRepository implements FileRepository
         $this->elasticsearchFileRepository = $elasticsearchFileRepository;
     }
 
-    public function add(array $file): void
+    public function add(File $file): void
     {
-        $this->entityManager->persist($file['info']);
+        $this->entityManager->persist($file);
         $this->entityManager->flush();
     }
 
-    public function find(array $tags): array
+    public function find(array $criteria): array
     {
-        $files = $this->entityManager->getRepository(File::class)->findBy(array('tag' => $tags));
+        $files =
+            $this->entityManager->getRepository(File::class)->findBy(
+                [
+                    'tag'         => $criteria['tags'],
+                    'description' => $criteria['descriptions']
+                ]
+            );
 
         $response = [];
 
@@ -57,8 +63,8 @@ final class MySqlFileRepository implements FileRepository
             return json_decode($cacheItem, true);
         }
 
-        $elaticResponse = $this->elasticsearchFileRepository->find($text);
-        $files = $this->find($elaticResponse);
+        $elasticResponse = $this->elasticsearchFileRepository->find($text);
+        $files = $this->find($elasticResponse);
 
         $this->redisClient->set($cacheKey, json_encode($files));
         $this->redisClient->expire($cacheKey);
@@ -70,10 +76,11 @@ final class MySqlFileRepository implements FileRepository
     private function getFile(File $file): array
     {
         return [
-            'path'   => $file->getPath(),
-            'tag'    => $file->getTag(),
-            'type'   => $file->getType(),
-            'filter' => $file->getFilter()
+            'path'        => $file->getPath(),
+            'tag'         => $file->getTag(),
+            'description' => $file->getDescription(),
+            'type'        => $file->getType(),
+            'filter'      => $file->getFilter()
         ];
     }
 

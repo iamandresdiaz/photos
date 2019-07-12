@@ -27,6 +27,12 @@ App\Photos\File\Domain\Entity\File:
       column: tag
       nullable: false
 
+    description:
+      type: string
+      length: 140
+      column: description
+      nullable: false
+
     type:
       type: string
       length: 15

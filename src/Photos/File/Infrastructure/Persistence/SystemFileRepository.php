@@ -14,8 +14,8 @@ final class SystemFileRepository
     public function add(array $file): void
     {
         try{
-            $fileDecode = base64_decode($file['data']);
-            file_put_contents($file['info']->getPath(), $fileDecode);
+            $fileDecode = base64_decode($file['base64']);
+            file_put_contents($file['path'], $fileDecode);
         } catch (UnexpectedValueException $unexpectedValueException) {
             throw $unexpectedValueException;
         }

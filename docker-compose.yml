@@ -8,21 +8,19 @@ services:
     volumes:
       - .:/var/www/html
       - ./etc/infrastructure/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./etc/infrastructure/nginx/certs/server.crt:/etc/certs/server.crt
-      - ./etc/infrastructure/nginx/certs/server.key:/etc/certs/server.key
     extra_hosts:
       - "www-local.photos.io:127.0.0.1"
     depends_on:
       - php-fpm
     links:
       - php-fpm
+      - blackfire
     ports:
-      - '80:80'
-      - '443:443'
+      - '8080:80'
 
   php-fpm:
     container_name: photos-php
-    build: Docker/php-fpm
+    build: docker/php-fpm
     volumes:
       - .:/var/www/html
       - ./vendor:/var/www/html/vendor
@@ -34,6 +32,7 @@ services:
       - redis
       - rabbitmq
       - elasticsearch
+      - blackfire
 
   mysql:
     container_name: photos-mysql
@@ -59,7 +58,7 @@ services:
 
   rabbitmq:
     container_name: photos-rabbitmq
-    build: Docker/rabbitmq
+    build: docker/rabbitmq
     restart: unless-stopped
     volumes:
       - ./var/rabbitmq/:/var/lib/rabbitmq
@@ -92,11 +91,9 @@ services:
     container_name: photos-blackfire
     image: blackfire/blackfire
     environment:
-      - BLACKFIRE_CLIENT_ID
-      - BLACKFIRE_CLIENT_TOKEN
-      - BLACKFIRE_SERVER_ID
-      - BLACKFIRE_SERVER_TOKEN
-    links:
-      - nginx
+      BLACKFIRE_CLIENT_ID: '3622b39f-ea96-43e1-b209-9ccbb1e4d575'
+      BLACKFIRE_CLIENT_TOKEN: 'eed7d05d9fdb206ebdbd7140f5a7369fe86e28f0001bd5330bfd988404ed31b4'
+      BLACKFIRE_SERVER_ID: '4750c8df-009b-4b8c-89a0-b2ba1d34b4c4'
+      BLACKFIRE_SERVER_TOKEN: '5f0564a2e75a206b01d276895b1ebd7e52cbe5451ddcdf2f833617177e50bd3d'
     ports:
       - "8707:8707"

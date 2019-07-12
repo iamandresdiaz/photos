@@ -32,6 +32,7 @@ final class ElasticsearchFileRepository
         $fileData = [
             'path' => $file->getPath(),
             'tag' => $file->getTag(),
+            'description' => $file->getDescription(),
             'type' => $file->getType(),
             'filter' => $file->getFilter(),
             'created_at' => $file->getCreatedAt()
@@ -52,30 +53,35 @@ final class ElasticsearchFileRepository
 
         $query = [
             'query' => [
-                'fuzzy' => [
-                    'tag' => [
-                        'value' => $text,
-                        'boost' => '1.0',
-                        'fuzziness' => '4',
-                        'prefix_length' => '0',
-                        'max_expansions' => '100'
-                    ]
+                'multi_match' => [
+                    'query'  => $text,
+                    'fields' => [
+                        'tag',
+                        'description'
+                    ],
+                    'fuzziness' => 'AUTO',
+                    'prefix_length' => '4'
                 ]
             ],
-            'size' => 100,
-            '_source' => ['tag']
+            'size' => 50,
+            '_source' => ['tag', 'description']
         ];
 
         $response = $this->elasticaClient->request($path, Request::GET, $query);
 
         $documents = $response->getData()['hits']['hits'];
 
-        $tags = [];
+        $tags         = [];
+        $descriptions = [];
 
         foreach ($documents as $document) {
             $tags[] = $document['_source']['tag'];
+            $descriptions[] = $document['_source']['description'];
         }
 
-        return array_unique($tags);
+        return [
+            'tags'         => array_unique($tags),
+            'descriptions' => array_unique($descriptions)
+        ];
     }
 }
