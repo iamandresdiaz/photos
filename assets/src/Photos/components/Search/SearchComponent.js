@@ -13,16 +13,8 @@ export const SearchComponent = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        let json = createJsonItem(searchText);
-        sessionActions.search(json);
+        sessionActions.search(searchText);
         setSearchText('');
-    };
-
-    const createJsonItem = (text) => {
-        return JSON.stringify({
-            text: text,
-        });
-
     };
 
     return (

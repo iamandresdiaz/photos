@@ -37,6 +37,7 @@ This project use technologies like:
 6. Bring up the rabbitMQ consumers inside each terminal tab opened before and use the command `make consumer` inside 
 each one
 7. Go to [local-www.photos.io](http://local-www.photos.io:8080/) on your browser
+8. Use the images inside the folder `./images` 
 
 #### 🔍 Profiling
 

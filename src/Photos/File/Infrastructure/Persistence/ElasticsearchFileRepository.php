@@ -46,7 +46,6 @@ final class ElasticsearchFileRepository
 
     }
 
-
     public function find(string $text): array
     {
         $path = '/_search';
@@ -60,7 +59,7 @@ final class ElasticsearchFileRepository
                         'description'
                     ],
                     'fuzziness' => 'AUTO',
-                    'prefix_length' => '4'
+                    'prefix_length' => '2'
                 ]
             ],
             'size' => 50,

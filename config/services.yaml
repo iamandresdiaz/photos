@@ -9,6 +9,14 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
-    App\Photos\File\Infrastructure\Controller\:
-       resource: '../src/Photos/File/Infrastructure/Controller'
-       tags: ['controller.service_arguments']
+    App\Photos\File\UI\Api\Add\:
+      resource: '../src/Photos/File/UI/Api/Add'
+      tags: ['controller.service_arguments']
+
+    App\Photos\File\UI\Api\Find\:
+      resource: '../src/Photos/File/UI/Api/Find'
+      tags: ['controller.service_arguments']
+
+    App\Photos\File\UI\Photos\ReactRoutes\:
+      resource: '../src/Photos/File/UI/Photos/ReactRoutes'
+      tags: ['controller.service_arguments']

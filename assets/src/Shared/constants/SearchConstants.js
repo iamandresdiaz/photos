@@ -6,5 +6,5 @@ export const searchConstants = {
 };
 
 export const apiEndpoints = {
-    SEARCH: '/api/search'
+    SEARCH: '/api/search/'
 };

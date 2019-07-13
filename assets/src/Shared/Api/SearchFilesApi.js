@@ -2,16 +2,10 @@ import axios from "axios";
 import { serverActions } from "../../Photos/actions/Search/ServerActions";
 import { apiEndpoints } from "../constants/SearchConstants";
 
-export function request(raw) {
+export function request(text) {
     const url = apiEndpoints.SEARCH;
-    axios.post(
-        url,
-        raw,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }
+    axios.get(
+        `${url}${text}`
     )
         .then((response) => {
             serverActions.search(response.data, null)

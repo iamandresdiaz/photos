@@ -1,3 +1,11 @@
-image_controllers:
-  resource: ../../src/Photos/File/Infrastructure/Controller/
+add_file_controller:
+  resource: ../../src/Photos/File/UI/Api/Add/
+  type: annotation
+
+find_file_controller:
+  resource: ../../src/Photos/File/UI/Api/Find/
+  type: annotation
+
+react_controller:
+  resource: ../../src/Photos/File/UI/Photos/ReactRoutes/
   type: annotation

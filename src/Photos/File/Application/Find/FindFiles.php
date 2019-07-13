@@ -18,9 +18,8 @@ final class FindFiles
         $this->mySqlFileRepository  = $mySqlFileRepository;
     }
 
-    public function __invoke(Request $request): array
+    public function __invoke(string $text): array
     {
-        $text  = json_decode($request->getContent(), true)['text'];
         $files = $this->mySqlFileRepository->cachedFind($text);
 
         return $files;
