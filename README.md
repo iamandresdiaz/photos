@@ -45,3 +45,6 @@ each one
 2. Run `make down` to turn down docker containers
 3. Run `make build` if you didnt do that before other wise use `make start` to turn up the docker containers
 4. Run `make profile` to make a profiling of the application
+
+✅ The last Lighthose report can be consulting [here](http://local-www.photos.io:8080/performance/report_2019-07-11_00-56-23.html) 
+but first you need to run `make build`
