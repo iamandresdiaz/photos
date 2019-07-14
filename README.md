@@ -25,7 +25,7 @@ This project uses the following technologies:
 
 1. [Install Docker](https://www.docker.com/get-started)
 2. Clone this project: `git clone https://github.com/iamandresdiaz/www.photos.io.git`
-3. Move to the project folder: `cd www.photos.com`
+3. Move to the project folder: `cd www.photos.io`
 
 #### 🌍 Application execution
 
