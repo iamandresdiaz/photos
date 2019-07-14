@@ -1,6 +1,6 @@
 # 📷 Photos Project
 
-This project use technologies like:
+This project uses the following technologies:
 
 * Blackfire
 * Elasticsearch with elastica.io + kibana
@@ -43,8 +43,8 @@ each terminal tab
 
 1. Change the blackfire environment values inside `docker-compose.yml` to your own blackfire Client and Server keys
 2. Run `make down` to turn down docker containers
-3. Run `make build` if you didnt do that before, other wise use `make start` to turn up the docker containers without an optimiced project build
+3. Run `make build` if you haven't done it before, otherwise use `make start` to turn up the docker containers without an optimized project build
 4. Run `make profile` to make a profiling of the application with blackfire
 
-✅ The last Lighthose report can be consulting [here](http://local-www.photos.io:8080/performance/report_2019-07-11_00-56-23.html) 
+✅ The last Lighthose report can be consulted [here](http://local-www.photos.io:8080/performance/report_2019-07-11_00-56-23.html) 
 but you need to run `make build` first in order to see the report
