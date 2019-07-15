@@ -38,6 +38,7 @@ This project uses the following technologies:
 each terminal tab
 7. Go to [local-www.photos.io](http://local-www.photos.io:8080/) on your browser
 8. Use the images provided inside the folder `./images` 
+9. In order to see the original images and their filters you will need to use the search bar to show the results
 
 #### 🔍 Profiling
 
