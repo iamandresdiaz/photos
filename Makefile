@@ -1,4 +1,4 @@
-build: deps start frontend backend
+build: deps start frontend-deps frontend-build backend
 
 deps: ; docker-compose build --no-cache
 
@@ -6,7 +6,9 @@ start: ; docker-compose up -d
 
 backend: ; docker-compose exec php-fpm composer install -o
 
-frontend: ; docker-compose exec php-fpm npm install && npm run build
+frontend-deps: ; docker-compose exec php-fpm npm install
+
+frontend-build: ; docker-compose exec php-fpm npm run build
 
 down: ; docker-compose down
 
