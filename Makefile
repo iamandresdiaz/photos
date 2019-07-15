@@ -1,4 +1,6 @@
-build: start frontend backend
+build: deps start frontend backend
+
+deps: ; docker-compose build --no-cache
 
 start: ; docker-compose up -d
 
