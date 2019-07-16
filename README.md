@@ -33,7 +33,7 @@ This project uses the following technologies:
 2. Install the App dependencies and bring up the Docker containers with the command `make build`
 3. Run `make migration` to create a migration
 4. Run `make migrate` to apply database migration
-5. Open 2 or more terminal tabs inside the same project folder (photos)
+5. Open 2 or more terminal tabs inside the same project folder (local-www.photos.io)
 6. Bring up the rabbitMQ consumers inside each terminal tab opened before and use the command `make consumer` inside 
 each terminal tab
 7. Go to [local-www.photos.io](http://local-www.photos.io:8080/) on your browser
