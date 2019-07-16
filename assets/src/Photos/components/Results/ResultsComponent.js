@@ -36,28 +36,24 @@ const Img = styled.img`
 
 export const ResultsComponent = () => {
 
-    const [response, setResponse] = useState({});
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
         SearchStore.on(searchConstants.SEARCH_SUCCESS, handleSuccess);
-        SearchStore.on(searchConstants.SEARCH_ERROR, handleError);
         return function cleanup() {
             SearchStore.removeListener(searchConstants.SEARCH_SUCCESS, handleSuccess);
-            SearchStore.removeListener(searchConstants.SEARCH_ERROR, handleError);
         };
 
     });
 
     const handleSuccess = () => {
         let apiResponse = SearchStore.getResponse();
-        setResponse(apiResponse);
-        setFiles(apiResponse.data);
-    };
 
-    const handleError = () => {
-        let apiResponse = SearchStore.getResponse();
-        setResponse(apiResponse);
+        if (!Array.isArray(apiResponse.data)){
+            setFiles([ apiResponse.data ]);
+        } else {
+            setFiles(apiResponse.data);
+        }
     };
 
     const thumbs = files.map((file, index) => (

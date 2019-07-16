@@ -28,17 +28,19 @@ final class MySqlFileRepository implements FileRepository
 
     public function add(File $file): void
     {
+        $this->redisClient->flushAll();
+
         $this->entityManager->persist($file);
         $this->entityManager->flush();
     }
 
-    public function find(array $criteria): array
+    public function find(array $results): array
     {
         $files =
             $this->entityManager->getRepository(File::class)->findBy(
                 [
-                    'tag'         => $criteria['tags'],
-                    'description' => $criteria['descriptions']
+                    'tag'         => $results['tags'],
+                    'description' => $results['descriptions']
                 ]
             );
 
@@ -46,7 +48,7 @@ final class MySqlFileRepository implements FileRepository
 
         foreach ($files as $file)
         {
-            $response[] = $this->getFile($file);
+            $response[] = $this->fileToArray($file);
         }
 
         return $response;
@@ -54,7 +56,7 @@ final class MySqlFileRepository implements FileRepository
 
     public function cachedFind(string $text): array
     {
-        $cacheKey = __CLASS__ . __METHOD__ . '(' . $text . ')';
+        $cacheKey = $this->redisClient::CACHE_FINGER_PRINT . '(' . $text . ')';
 
         $cacheItem = $this->redisClient->get($cacheKey);
 
@@ -63,8 +65,8 @@ final class MySqlFileRepository implements FileRepository
             return json_decode($cacheItem, true);
         }
 
-        $elasticResponse = $this->elasticsearchFileRepository->find($text);
-        $files = $this->find($elasticResponse);
+        $results = $this->elasticsearchFileRepository->find($text);
+        $files = $this->find($results);
 
         $this->redisClient->set($cacheKey, json_encode($files));
         $this->redisClient->expire($cacheKey);
@@ -73,7 +75,7 @@ final class MySqlFileRepository implements FileRepository
 
     }
 
-    private function getFile(File $file): array
+    private function fileToArray(File $file): array
     {
         return [
             'path'        => $file->getPath(),
@@ -83,5 +85,4 @@ final class MySqlFileRepository implements FileRepository
             'filter'      => $file->getFilter()
         ];
     }
-
 }

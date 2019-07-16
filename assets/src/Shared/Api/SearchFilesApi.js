@@ -8,9 +8,9 @@ export function request(text) {
         `${url}${text}`
     )
         .then((response) => {
-            serverActions.search(response.data, null)
+            serverActions.search(response.data, null);
         })
         .catch((error) => {
-            serverActions.search(null, error)
+            serverActions.search(null, error);
         });
 }
